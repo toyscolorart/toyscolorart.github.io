@@ -2,40 +2,43 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Juego de Colorear ToysColorArt</title>
+    <title>ToysColorArt</title>
     <style>
-        body { font-family: 'Arial', sans-serif; text-align: center; background-color: #fdfbf7; padding: 20px; }
-        h1 { color: #333; }
-        #canvas-container { margin: 20px auto; border: 2px solid #ccc; padding: 20px; background: white; width: fit-content; border-radius: 10px; }
-        .coloreable { cursor: pointer; transition: 0.3s; }
-        .coloreable:hover { stroke: #ffcc00; stroke-width: 4px; }
-        #selector-color { margin-top: 20px; padding: 10px; border: none; cursor: pointer; }
+        body { font-family: sans-serif; text-align: center; background-color: #add8e6; }
+        .container { display: flex; justify-content: center; gap: 20px; padding: 20px; }
+        #canvas { border: 5px solid #333; background: white; padding: 20px; }
+        .palette { display: grid; grid-template-columns: repeat(4, 30px); gap: 10px; background: #333; padding: 15px; border-radius: 10px; }
+        .color { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid white; }
     </style>
 </head>
 <body>
-    <h1>Bienvenido a ToysColorArt</h1>
-    <p>¡Haz clic en las partes del dibujo para pintarlas!</p>
-    
-    <input type="color" id="selector-color" value="#ff0000">
-    
-    <div id="canvas-container">
-        <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-            <circle id="petalo-1" class="coloreable" cx="100" cy="70" r="30" fill="white" stroke="black" stroke-width="2"/>
-            <circle id="petalo-2" class="coloreable" cx="130" cy="100" r="30" fill="white" stroke="black" stroke-width="2"/>
-            <circle id="petalo-3" class="coloreable" cx="100" cy="130" r="30" fill="white" stroke="black" stroke-width="2"/>
-            <circle id="petalo-4" class="coloreable" cx="70" cy="100" r="30" fill="white" stroke="black" stroke-width="2"/>
-            <circle id="centro" class="coloreable" cx="100" cy="100" r="20" fill="white" stroke="black" stroke-width="2"/>
-        </svg>
+    <h1>¡Bienvenido a ToysColorArt!</h1>
+    <div class="container">
+        <div id="canvas">
+            <!-- Aquí irá tu dibujo SVG -->
+            <svg width="200" height="200" onclick="pintar(event)">
+                <circle id="parte1" cx="100" cy="100" r="50" fill="white" stroke="black" stroke-width="2"/>
+            </svg>
+        </div>
+        <div class="palette" id="palette"></div>
     </div>
 
     <script>
-        document.querySelectorAll('.coloreable').forEach(item => {
-            item.addEventListener('click', (e) => {
-                const color = document.getElementById('selector-color').value;
-                e.target.style.fill = color;
-            });
+        let colorActual = 'red';
+        const colores = ['#8B0000', '#FF0000', '#FF4500', '#FFD700', '#00FF00', '#008000', '#0000FF', '#4B0082'];
+        
+        const palette = document.getElementById('palette');
+        colores.forEach(c => {
+            let div = document.createElement('div');
+            div.className = 'color';
+            div.style.backgroundColor = c;
+            div.onclick = () => colorActual = c;
+            palette.appendChild(div);
         });
+
+        function pintar(e) {
+            if(e.target.tagName === 'circle') e.target.setAttribute('fill', colorActual);
+        }
     </script>
 </body>
 </html>
