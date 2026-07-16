@@ -4,28 +4,39 @@
     <meta charset="UTF-8">
     <title>ToysColorArt</title>
     <style>
-        body { font-family: sans-serif; text-align: center; background-color: #add8e6; }
-        .container { display: flex; justify-content: center; gap: 20px; padding: 20px; }
-        #canvas { border: 5px solid #333; background: white; padding: 20px; }
-        .palette { display: grid; grid-template-columns: repeat(4, 30px); gap: 10px; background: #333; padding: 15px; border-radius: 10px; }
-        .color { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid white; }
+        body { font-family: 'Arial', sans-serif; background-color: #add8e6; display: flex; flex-direction: column; align-items: center; margin: 0; padding: 20px; }
+        .header { color: white; text-shadow: 2px 2px 4px #000; margin-bottom: 20px; }
+        .app-container { display: flex; background: #333; padding: 20px; border-radius: 15px; border: 5px solid #222; }
+        #canvas { background: white; width: 500px; height: 500px; border: 2px solid #000; cursor: crosshair; }
+        .toolbar { display: grid; grid-template-columns: repeat(4, 40px); gap: 10px; margin-left: 20px; }
+        .color { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; border: 2px solid white; }
+        .actions { margin-top: 20px; display: flex; gap: 10px; }
+        button { padding: 10px 20px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
-    <h1>¡Bienvenido a ToysColorArt!</h1>
-    <div class="container">
-        <div id="canvas">
-            <!-- Aquí irá tu dibujo SVG -->
-            <svg width="200" height="200" onclick="pintar(event)">
-                <circle id="parte1" cx="100" cy="100" r="50" fill="white" stroke="black" stroke-width="2"/>
-            </svg>
-        </div>
-        <div class="palette" id="palette"></div>
+
+    <h1 class="header">ToysColorArt</h1>
+
+    <div class="app-container">
+        <!-- Área de Dibujo -->
+        <svg id="canvas" onclick="pintar(event)">
+            <!-- Aquí irá el dibujo. He puesto un círculo de ejemplo -->
+            <circle id="parte1" cx="250" cy="250" r="100" fill="white" stroke="black" stroke-width="3"/>
+        </svg>
+
+        <!-- Paleta de Colores -->
+        <div class="toolbar" id="palette"></div>
+    </div>
+
+    <div class="actions">
+        <button onclick="location.reload()">Reiniciar</button>
+        <button onclick="window.print()">Imprimir</button>
     </div>
 
     <script>
-        let colorActual = 'red';
-        const colores = ['#8B0000', '#FF0000', '#FF4500', '#FFD700', '#00FF00', '#008000', '#0000FF', '#4B0082'];
+        let colorActual = 'white';
+        const colores = ['#8B0000', '#FF0000', '#FF4500', '#FFD700', '#FFFF00', '#00FF00', '#008000', '#00FFFF', '#0000FF', '#4B0082', '#FF00FF', '#FFC0CB', '#8B4513', '#A52A2A', '#808080', '#000000'];
         
         const palette = document.getElementById('palette');
         colores.forEach(c => {
@@ -37,7 +48,7 @@
         });
 
         function pintar(e) {
-            if(e.target.tagName === 'circle') e.target.setAttribute('fill', colorActual);
+            if(e.target.tagName !== 'svg') e.target.setAttribute('fill', colorActual);
         }
     </script>
 </body>
