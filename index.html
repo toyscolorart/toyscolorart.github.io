@@ -1,206 +1,171 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<title>ToysColorArt</title>
-<style>
-  body { 
-    font-family: 'Arial', sans-serif; 
-    background-color: #add8e6; 
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    margin: 0; 
-    padding: 20px; 
-  }
-  .logo {
-    margin-bottom: 15px;
-    width: 250px;
-  }
-  .app-container { 
-    display: flex; 
-    background: #2a2a2a; 
-    padding: 15px; 
-    border-radius: 15px; 
-    border: 5px solid #111;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.4);
-  }
-  #canvas { 
-    background: white; 
-    width: 500px; 
-    height: 500px; 
-    border: 3px solid #000; 
-    /* PINCEL GRANDE 64PX */
-    cursor: url('https://i.imgur.com/8Qf9gZp.png') 8 56, crosshair;
-  }
-  
-  .color-palette {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 6px;
-    background-color: #2a2a2a;
-    padding: 12px;
-    border-radius: 10px;
-    margin-left: 15px;
-    width: fit-content;
-  }
-  .color-btn {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    border: 2px solid #444;
-    cursor: pointer;
-    transition: all 0.15s ease;
-  }
-  .color-btn:hover { transform: scale(1.15); border: 3px solid #fff; }
-  .color-btn.active { 
-    border: 3px solid #00ff00; 
-    transform: scale(1.2); 
-    box-shadow: 0 0 10px #00ff00; 
-  }
-  .color-btn.transparent {
-    background-image: linear-gradient(45deg, #666 25%, transparent 25%), linear-gradient(-45deg, #666 25%, transparent 25%);
-    background-size: 8px 8px;
-  }
-
-  .panel-actions {
-    grid-column: span 5;
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 2px solid #444;
-  }
-  .panel-btn {
-    width: 45px;
-    height: 45px;
-    border-radius: 8px;
-    border: none;
-    background: #6a0dad;
-    color: white;
-    font-size: 22px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .panel-btn:hover {
-    background: #8a2be2;
-    transform: scale(1.1);
-  }
-  .panel-btn.active-borrador {
-    background: #ff0000;
-  }
-</style>
+    <meta charset="UTF-8">
+    <title>ToysColorArt</title>
+    <style>
+        body { 
+            font-family: 'Arial', sans-serif; 
+            background-color: #add8e6; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            margin: 0; 
+            padding: 20px; 
+        }
+        .logo { margin-bottom: 15px; width: 250px; }
+        .app-container { 
+            display: flex; 
+            background: #2a2a2a; 
+            padding: 15px; 
+            border-radius: 15px; 
+            border: 5px solid #111;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.4);
+        }
+        #canvas { 
+            background: white; 
+            width: 500px; 
+            height: 500px; 
+            border: 3px solid #000; 
+            /* Pincel cargado */
+            cursor: url('https://i.imgur.com/8Qf9gZp.png') 8 56, crosshair;
+        }
+        .color-palette {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 6px;
+            background-color: #2a2a2a;
+            padding: 12px;
+            border-radius: 10px;
+            margin-left: 15px;
+            width: fit-content;
+        }
+        .color-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 2px solid #444;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .color-btn:hover { transform: scale(1.15); border: 3px solid #fff; }
+        .color-btn.active { 
+            border: 3px solid #00ff00; 
+            transform: scale(1.2); 
+            box-shadow: 0 0 10px #00ff00; 
+        }
+        .color-btn.transparent {
+            background-image: linear-gradient(45deg, #666 25%, transparent 25%), linear-gradient(-45deg, #666 25%, transparent 25%);
+            background-size: 8px 8px;
+        }
+        .panel-actions {
+            grid-column: span 5;
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 2px solid #444;
+        }
+        .panel-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 8px;
+            border: none;
+            background: #6a0dad;
+            color: white;
+            font-size: 22px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .panel-btn:hover { background: #8a2be2; transform: scale(1.1); }
+        .panel-btn.active-borrador { background: #ff0000; }
+    </style>
 </head>
 <body>
 
-<!-- CAMBIA ESTA URL POR LA DE TU LOGO -->
 <img src="https://i.imgur.com/LOGO_URL.png" alt="ToysColor" class="logo">
 
 <div class="app-container">
-  <svg id="canvas" onclick="pintar(event)">
-    <!-- TU DIBUJO VA AQUÍ -->
-    <circle id="parte1" cx="250" cy="250" r="100" fill="white" stroke="black" stroke-width="3"/>
-  </svg>
+    <svg id="canvas" onclick="pintar(event)">
+        <circle id="parte1" cx="250" cy="250" r="100" fill="white" stroke="black" stroke-width="3"/>
+    </svg>
 
-  <div class="color-palette" id="palette">
-    <div class="panel-actions">
-      <button class="panel-btn" onclick="reiniciar()" title="Reiniciar">🔄</button>
-      <button class="panel-btn" onclick="borrarModo()" id="btnBorrador" title="Borrador">🧽</button>
-      <button class="panel-btn" onclick="window.print()" title="Imprimir">🖨️</button>
+    <div class="color-palette" id="palette">
+        <div class="panel-actions">
+            <button class="panel-btn" onclick="reiniciar()" title="Reiniciar">🔄</button>
+            <button class="panel-btn" onclick="borrarModo()" id="btnBorrador" title="Borrador">🧽</button>
+            <button class="panel-btn" onclick="window.print()" title="Imprimir">🖨️</button>
+        </div>
     </div>
-  </div>
 </div>
 
 <script>
-  let colorActual = '#FFFFFF';
-  let modoBorrador = false;
-  let audioContext;
+    let colorActual = '#FFFFFF';
+    let modoBorrador = false;
+    let audioContext;
 
-  const colores = [
-    '#8B0000', '#B22222', '#FF0000', '#FF4500', '#FFA500',
-    '#ADFF2F', '#FFFFE0', '#FFFF99', '#FFD700', '#FFC125',
-    '#00FF00', '#9ACD32', '#FFFF00', '#7FFF00', '#8FBC8F',
-    '#008B8B', '#006400', '#228B22', '#32CD32', '#556B2F',
-    '#00BFFF', '#1E90FF', '#0000CD', '#0000FF', '#000080',
-    '#6A5ACD', '#87CEEB', '#ADD8E6', '#4169E1', '#0000FF',
-    '#4B0082', '#483D8B', '#800080', '#BA55D3', '#FF69B4',
-    '#FF1493', '#FF69B4', '#FFB6C1', '#FFC0CB', '#FFB6C1',
-    '#FFF0F5', '#FFDAB9', '#F5DEB3', '#DEB887', '#D2B48C',
-    '#000', '#8B4513', '#A52A2A', '#A0522D', '#CD853F',
-    'transparent', '#808080', '#A9A9A9', '#D3D3D3', '#FFFFFF'
-  ];
+    const colores = [
+        '#8B0000', '#B22222', '#FF0000', '#FF4500', '#FFA500',
+        '#ADFF2F', '#FFFFE0', '#FFFF99', '#FFD700', '#FFC125',
+        '#00FF00', '#9ACD32', '#FFFF00', '#7FFF00', '#8FBC8F',
+        '#008B8B', '#006400', '#228B22', '#32CD32', '#556B2F',
+        '#00BFFF', '#1E90FF', '#0000CD', '#0000FF', '#000080',
+        '#6A5ACD', '#87CEEB', '#ADD8E6', '#4169E1', '#0000FF',
+        '#4B0082', '#483D8B', '#800080', '#BA55D3', '#FF69B4',
+        '#FF1493', '#FF69B4', '#FFB6C1', '#FFC0CB', '#FFB6C1',
+        '#FFF0F5', '#FFDAB9', '#F5DEB3', '#DEB887', '#D2B48C',
+        '#000', '#8B4513', '#A52A2A', '#A0522D', '#CD853F',
+        'transparent', '#808080', '#A9A9A9', '#D3D3D3', '#FFFFFF'
+    ];
 
-  const palette = document.getElementById('palette');
+    const palette = document.getElementById('palette');
 
-  // SONIDO CON WEBAUDIO - FUNCIONA SIEMPRE
-  function playSound() {
-    if(!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    const oscillator = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-    oscillator.type = 'sine';
-    oscillator.frequency.value = 800;
-    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-    oscillator.start();
-    oscillator.stop(audioContext.currentTime + 0.1);
-  }
-
-  function actualizarPincel(color) {
-    const canvas = document.getElementById('canvas');
-    const colorHex = color === 'transparent' ? 'FFFFFF' : color.replace('#','');
-    // Genera el pincel del color seleccionado
-    canvas.style.cursor = `url('https://via.placeholder.com/64/8B4513/FFFFFF?text=+') 8 56, crosshair`;
-  }
-
-  colores.forEach((c, index) => {
-    let btn = document.createElement('button');
-    btn.className = 'color-btn';
-    if(c === 'transparent') btn.classList.add('transparent');
-    btn.style.backgroundColor = c;
-    btn.setAttribute('data-color', c);
-    
-    btn.onclick = () => {
-      document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      colorActual = c;
-      modoBorrador = false;
-      document.getElementById('btnBorrador').classList.remove('active-borrador');
-      
-      actualizarPincel(c);
-      playSound(); // SUENA SIEMPRE
-    };
-    
-    palette.insertBefore(btn, palette.querySelector('.panel-actions'));
-    if(c === '#FFFFFF') btn.classList.add('active');
-  });
-
-  function pintar(e) {
-    if(e.target.tagName !== 'svg') {
-      if(modoBorrador) {
-        e.target.setAttribute('fill', 'white');
-      } else {
-        e.target.setAttribute('fill', colorActual);
-      }
+    function playSound() {
+        if(!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        oscillator.type = 'sine';
+        oscillator.frequency.value = 800;
+        gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+        oscillator.start();
+        oscillator.stop(audioContext.currentTime + 0.1);
     }
-  }
 
-  function reiniciar() {
-    document.querySelectorAll('#canvas *').forEach(el => {
-      el.setAttribute('fill', 'white');
+    colores.forEach((c) => {
+        let btn = document.createElement('button');
+        btn.className = 'color-btn';
+        if(c === 'transparent') btn.classList.add('transparent');
+        btn.style.backgroundColor = c;
+        btn.onclick = () => {
+            document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            colorActual = c;
+            modoBorrador = false;
+            document.getElementById('btnBorrador').classList.remove('active-borrador');
+            playSound();
+        };
+        palette.insertBefore(btn, palette.querySelector('.panel-actions'));
     });
-  }
 
-  function borrarModo() {
-    modoBorrador = !modoBorrador;
-    document.getElementById('btnBorrador').classList.toggle('active-borrador');
-  }
+    function pintar(e) {
+        if(e.target.tagName !== 'svg') {
+            e.target.setAttribute('fill', modoBorrador ? 'white' : colorActual);
+        }
+    }
 
-  actualizarPincel('#FFFFFF');
+    function reiniciar() {
+        document.querySelectorAll('#canvas *').forEach(el => el.setAttribute('fill', 'white'));
+    }
+
+    function borrarModo() {
+        modoBorrador = !modoBorrador;
+        document.getElementById('btnBorrador').classList.toggle('active-borrador');
+    }
 </script>
 
 </body>
 </html>
-  
