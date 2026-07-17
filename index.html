@@ -34,7 +34,7 @@
   .panel-btn:hover { background: #8a2be2; transform: scale(1.1); }
   .panel-btn.active-borrador { background: #ff0000; }
 
-  /* PINCEL GIGANTE 240PX = 3 VECES MAS GRANDE */
+  /* PINCEL GIGANTE DELGADO */
   #pincel {
     position: fixed;
     width: 240px;
@@ -42,7 +42,7 @@
     pointer-events: none;
     z-index: 9999;
     background-size: contain;
-    transform: translate(-40px, -225px); /* La punta exacta arriba */
+    transform: translate(-20px, -230px); /* LA PUNTA EXACTA ARRIBA */
   }
 </style>
 </head>
@@ -105,8 +105,8 @@
 
   function actualizarPincel(color) {
     const colorHex = color === 'transparent' ? '%23FFFFFF' : encodeURIComponent(color);
-    // PINCEL GIGANTE DELICADO: Mango delgado + virola + 9 CERDAS LARGAS CON PUNTA que toman el color
-    pincel.style.backgroundImage = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240"><path d="M114 105 L126 105 L132 225 L108 225 Z" fill="%23DC143C"/><path d="M108 225 L132 225 L120 240 Z" fill="%23B22222"/><rect x="105" y="90" width="30" height="20" rx="2" fill="%23C0C0C0"/><g fill="${colorHex}"><path d="M111 90 L114 20 Z"/><path d="M114 90 L117 18 Z"/><path d="M117 90 L120 17 Z"/><path d="M120 90 L123 16 Z"/><path d="M123 90 L126 17 Z"/><path d="M126 90 L129 18 Z"/><path d="M129 90 L132 20 Z"/><path d="M132 90 L135 22 Z"/><path d="M135 90 L138 24 Z"/></g></svg>')`;
+    // PINCEL DELGADO: Mango de 8px que termina en punta + 11 cerdas finas con punta
+    pincel.style.backgroundImage = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240"><path d="M116 100 L124 100 L128 228 L112 228 Z" fill="%23E74C3C"/><path d="M112 228 L128 228 L120 240 Z" fill="%23C0392B"/><rect x="110" y="88" width="20" height="16" rx="1" fill="%23BDC3C7"/><g fill="${colorHex}"><path d="M113 88 L115 12 Z"/><path d="M115 88 L117 10 Z"/><path d="M117 88 L119 9 Z"/><path d="M119 88 L121 8 Z"/><path d="M121 88 L123 8 Z"/><path d="M123 88 L125 9 Z"/><path d="M125 88 L127 10 Z"/><path d="M127 88 L129 12 Z"/><path d="M129 88 L131 14 Z"/><path d="M131 88 L133 16 Z"/><path d="M133 88 L135 18 Z"/></g></svg>')`;
   }
 
   colores.forEach((c) => {
