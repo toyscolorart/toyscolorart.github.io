@@ -17,7 +17,7 @@
   .logo { margin-bottom: 15px; width: 250px; }
   .app-container { 
     display: flex; 
-    background: #2a2a2a; 
+    background: #2a2a; 
     padding: 15px; 
     border-radius: 15px; 
     border: 5px solid #111; 
@@ -34,15 +34,15 @@
   .panel-btn:hover { background: #8a2be2; transform: scale(1.1); }
   .panel-btn.active-borrador { background: #ff0000; }
 
-  /* PINCEL BONITO 64PX */
+  /* PINCEL GORDO 70PX TIPO COLOREAR.NET */
   #pincel {
     position: fixed;
-    width: 64px;
-    height: 64px;
+    width: 70px;
+    height: 70px;
     pointer-events: none;
     z-index: 9999;
     background-size: contain;
-    transform: translate(-8px, -55px); /* Ajustado para que pinte en la punta */
+    transform: translate(-15px, -60px); /* Punta del pincel */
   }
 </style>
 </head>
@@ -105,8 +105,8 @@
 
   function actualizarPincel(color) {
     const colorHex = color === 'transparent' ? '%23FFFFFF' : encodeURIComponent(color);
-    // PINCEL NUEVO: Mango madera + virola metal + cerdas de color
-    pincel.style.backgroundImage = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect x="24" y="8" width="16" height="40" rx="2" fill="%23A0522D"/><rect x="22" y="46" width="20" height="6" rx="1" fill="%23C0C0C0"/><path d="M20 52 Q32 62 44 52 L44 56 Q32 60 20 56 Z" fill="${colorHex}"/></svg>')`;
+    // PINCEL GORDO: Mango ancho + virola grande + Cerdas GORDAS para que se note el color
+    pincel.style.backgroundImage = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 70"><rect x="22" y="6" width="26" height="42" rx="3" fill="%238B4513"/><rect x="18" y="46" width="34" height="8" rx="2" fill="%23D3D3D3"/><ellipse cx="35" cy="58" rx="18" ry="12" fill="${colorHex}"/></svg>')`;
   }
 
   colores.forEach((c) => {
