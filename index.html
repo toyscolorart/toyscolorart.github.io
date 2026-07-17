@@ -1,55 +1,155 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>ToysColorArt</title>
-    <style>
-        body { font-family: 'Arial', sans-serif; background-color: #add8e6; display: flex; flex-direction: column; align-items: center; margin: 0; padding: 20px; }
-        .header { color: white; text-shadow: 2px 2px 4px #000; margin-bottom: 20px; }
-        .app-container { display: flex; background: #333; padding: 20px; border-radius: 15px; border: 5px solid #222; }
-        #canvas { background: white; width: 500px; height: 500px; border: 2px solid #000; cursor: crosshair; }
-        .toolbar { display: grid; grid-template-columns: repeat(4, 40px); gap: 10px; margin-left: 20px; }
-        .color { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; border: 2px solid white; }
-        .actions { margin-top: 20px; display: flex; gap: 10px; }
-        button { padding: 10px 20px; cursor: pointer; font-weight: bold; }
-    </style>
+<meta charset="UTF-8">
+<title>ToysColorArt</title>
+<style>
+  body { 
+    font-family: 'Arial', sans-serif; 
+    background-color: #add8e6; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    margin: 0; 
+    padding: 20px; 
+  }
+  .header { 
+    color: white; 
+    text-shadow: 2px 2px 4px #000; 
+    margin-bottom: 20px; 
+  }
+  .app-container { 
+    display: flex; 
+    background: #333; 
+    padding: 20px; 
+    border-radius: 15px; 
+    border: 5px solid #222; 
+  }
+  #canvas { 
+    background: white; 
+    width: 500px; 
+    height: 500px; 
+    border: 2px solid #000; 
+    cursor: crosshair; 
+  }
+  
+  /* PALETA DE 55 COLORES NUEVA */
+  .color-palette {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* 5 columnas x 11 filas = 55 */
+    gap: 6px;
+    background-color: #3a3a3a;
+    padding: 12px;
+    border-radius: 15px;
+    margin-left: 20px;
+    width: fit-content;
+    max-width: 260px;
+  }
+  .color-btn {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 2px solid #555;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .color-btn:hover { 
+    transform: scale(1.2); 
+    border: 3px solid #fff; 
+  }
+  .color-btn.active { 
+    border: 3px solid #00ff00; 
+    transform: scale(1.2); 
+    box-shadow: 0 0 8px #00ff00; 
+  }
+  .color-btn.transparent {
+    background-image: linear-gradient(45deg, #ccc 25%, transparent 25%), linear-gradient(-45deg, #ccc 25%, transparent 25%);
+    background-size: 10px 10px;
+  }
+
+  .actions { 
+    margin-top: 20px; 
+    display: flex; 
+    gap: 10px; 
+  }
+  button { 
+    padding: 10px 20px; 
+    cursor: pointer; 
+    font-weight: bold; 
+    border-radius: 8px;
+    border: none;
+  }
+</style>
 </head>
 <body>
 
-    <h1 class="header">ToysColorArt</h1>
+<h1 class="header">ToysColorArt</h1>
 
-    <div class="app-container">
-        <!-- Área de Dibujo -->
-        <svg id="canvas" onclick="pintar(event)">
-            <!-- Aquí irá el dibujo. He puesto un círculo de ejemplo -->
-            <circle id="parte1" cx="250" cy="250" r="100" fill="white" stroke="black" stroke-width="3"/>
-        </svg>
+<div class="app-container">
+  <!-- Área de Dibujo -->
+  <svg id="canvas" onclick="pintar(event)">
+    <!-- Ejemplo: tu mariposa o dibujo va aquí -->
+    <circle id="parte1" cx="250" cy="250" r="100" fill="white" stroke="black" stroke-width="3"/>
+  </svg>
 
-        <!-- Paleta de Colores -->
-        <div class="toolbar" id="palette"></div>
-    </div>
+  <!-- PALETA DE 55 COLORES -->
+  <div class="color-palette" id="palette"></div>
+</div>
 
-    <div class="actions">
-        <button onclick="location.reload()">Reiniciar</button>
-        <button onclick="window.print()">Imprimir</button>
-    </div>
+<div class="actions">
+  <button onclick="location.reload()">Reiniciar</button>
+  <button onclick="window.print()">Imprimir</button>
+</div>
 
-    <script>
-        let colorActual = 'white';
-        const colores = ['#8B0000', '#FF0000', '#FF4500', '#FFD700', '#FFFF00', '#00FF00', '#008000', '#00FFFF', '#0000FF', '#4B0082', '#FF00FF', '#FFC0CB', '#8B4513', '#A52A2A', '#808080', '#000000'];
-        
-        const palette = document.getElementById('palette');
-        colores.forEach(c => {
-            let div = document.createElement('div');
-            div.className = 'color';
-            div.style.backgroundColor = c;
-            div.onclick = () => colorActual = c;
-            palette.appendChild(div);
-        });
+<script>
+  let colorActual = '#000'; // color por defecto negro
 
-        function pintar(e) {
-            if(e.target.tagName !== 'svg') e.target.setAttribute('fill', colorActual);
-        }
-    </script>
+  // LOS 55 COLORES DE TU IMAGEN
+  const colores = [
+    '#8B0000', '#B22222', '#FF0000', '#FF4500', '#FFA500', // Fila 1
+    '#ADFF2F', '#FFFFE0', '#FFFF99', '#FFD700', '#FFC125', // Fila 2
+    '#00FF00', '#9ACD32', '#FFFF00', '#7FFF00', '#8FBC8F', // Fila 3
+    '#008B8B', '#006400', '#228B22', '#32CD32', '#556B2F', // Fila 4
+    '#00BFFF', '#1E90FF', '#0000CD', '#0000FF', '#000080', // Fila 5
+    '#6A5ACD', '#87CEEB', '#ADD8E6', '#4169E1', '#0000FF', // Fila 6
+    '#4B0082', '#483D8B', '#800080', '#BA55D3', '#FF69B4', // Fila 7
+    '#FF1493', '#FF69B4', '#FFB6C1', '#FFC0CB', '#FFB6C1', // Fila 8
+    '#FFF0F5', '#FFDAB9', '#F5DEB3', '#DEB887', '#D2B48C', // Fila 9
+    '#000000', '#8B4513', '#A52A2A', '#A0522D', '#CD853F', // Fila 10
+    'transparent', '#808080', '#A9A9A9', '#D3D3D3', '#FFFFFF' // Fila 11
+  ];
+
+  const palette = document.getElementById('palette');
+
+  // Crear los 55 botones automáticamente
+  colores.forEach((c, index) => {
+    let btn = document.createElement('button');
+    btn.className = 'color-btn';
+    if(c === 'transparent') btn.classList.add('transparent');
+    btn.style.backgroundColor = c;
+    btn.setAttribute('data-color', c);
+    
+    btn.onclick = () => {
+      // Quitar active de todos
+      document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+      // Poner active al actual
+      btn.classList.add('active');
+      colorActual = c;
+    };
+    
+    palette.appendChild(btn);
+    
+    // Seleccionar el primer color por defecto
+    if(index === 0) btn.classList.add('active');
+  });
+
+  // Función para pintar al hacer click en el SVG
+  function pintar(e) {
+    if(e.target.tagName !== 'svg') {
+      e.target.setAttribute('fill', colorActual);
+    }
+  }
+</script>
+
 </body>
 </html>
