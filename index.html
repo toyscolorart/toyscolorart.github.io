@@ -30,7 +30,7 @@
     width: 500px; 
     height: 500px; 
     border: 3px solid #000; 
-    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="%23A0522D"/><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z" fill="%23FFFFFF"/></svg>') 0 24, crosshair;
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><path d="M6 40 L10 44 L18 36 L42 12 L36 6 L12 30 L4 38 Z" fill="%23A0522D"/><ellipse cx="15" cy="33" rx="6" ry="12" transform="rotate(-45 15 33)" fill="%23FFFFFF"/></svg>') 6 42, crosshair;
   }
   
  .color-palette {
@@ -93,9 +93,7 @@
 </head>
 <body>
 
-<!-- TU LOGO -->
 <img src="https://i.imgur.com/LOGO_URL.png" alt="ToysColor" class="logo">
-<!-- Sube tu logo a imgur y cambia la URL -->
 
 <div class="app-container">
   <svg id="canvas" onclick="pintar(event)">
@@ -111,11 +109,14 @@
   </div>
 </div>
 
-<audio id="clickSound" src="https://www.soundjay.com/buttons/sounds/button-09.mp3"></audio>
+<audio id="clickSound" preload="auto">
+  <source src="https://www.soundjay.com/buttons/sounds/button-09.mp3" type="audio/mpeg">
+</audio>
 
 <script>
-  let colorActual = '#FFFFFF'; // EMPIEZA EN BLANCO
+  let colorActual = '#FFFFFF';
   let modoBorrador = false;
+  let audioActivado = false; // Para desbloquear el sonido
 
   const colores = [
     '#8B0000', '#B22222', '#FF0000', '#FF4500', '#FFA500',
@@ -134,14 +135,24 @@
   const palette = document.getElementById('palette');
   const clickSound = document.getElementById('clickSound');
 
-  // Función para actualizar el cursor del pincel
+  // Desbloquear audio al primer click en la página
+  document.body.addEventListener('click', () => {
+    if(!audioActivado) {
+      clickSound.play().then(() => {
+        clickSound.pause();
+        clickSound.currentTime = 0;
+        audioActivado = true;
+      }).catch(()=>{});
+    }
+  }, {once: true});
+
   function actualizarPincel(color) {
     const canvas = document.getElementById('canvas');
     const colorHex = color === 'transparent' ? '%23FFFFFF' : encodeURIComponent(color);
-    canvas.style.cursor = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="%23A0522D"/><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z" fill="${colorHex}"/></svg>') 0 24, crosshair`;
+    // PINCEL GRANDE 48x48
+    canvas.style.cursor = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><path d="M6 40 L10 44 L18 36 L42 12 L36 6 L12 30 L4 38 Z" fill="%23A0522D"/><ellipse cx="15" cy="33" rx="6" ry="12" transform="rotate(-45 15 33)" fill="${colorHex}"/></svg>') 6 42, crosshair`;
   }
 
-  // Crear los 55 botones
   colores.forEach((c, index) => {
     let btn = document.createElement('button');
     btn.className = 'color-btn';
@@ -156,15 +167,16 @@
       modoBorrador = false;
       document.getElementById('btnBorrador').classList.remove('active-borrador');
       
-      actualizarPincel(c); // CAMBIA EL COLOR DEL PINCEL
+      actualizarPincel(c);
       
-      clickSound.currentTime = 0;
-      clickSound.play();
+      // SONIDO
+      if(audioActivado) {
+        clickSound.currentTime = 0;
+        clickSound.play();
+      }
     };
     
     palette.insertBefore(btn, palette.querySelector('.panel-actions'));
-    
-    // El blanco es el que empieza activo
     if(c === '#FFFFFF') btn.classList.add('active');
   });
 
@@ -187,13 +199,12 @@
   function borrarModo() {
     modoBorrador =!modoBorrador;
     document.getElementById('btnBorrador').classList.toggle('active-borrador');
-    // Pincel blanco cuando activas borrador
     if(modoBorrador) actualizarPincel('#FFFFFF');
   }
 
-  // Inicializar pincel en blanco al cargar
   actualizarPincel('#FFFFFF');
 </script>
 
 </body>
 </html>
+    
