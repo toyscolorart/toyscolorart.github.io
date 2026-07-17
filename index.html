@@ -12,7 +12,7 @@
     align-items: center; 
     margin: 0; 
     padding: 20px; 
-    cursor: none; /* 1. OCULTAMOS EL CURSOR NORMAL */
+    cursor: none;
   }
   .logo { margin-bottom: 15px; width: 250px; }
   .app-container { 
@@ -23,33 +23,26 @@
     border: 5px solid #111; 
     box-shadow: 0 5px 20px rgba(0,0,0,0.4); 
   }
-  #canvas { 
-    background: white; 
-    width: 500px; 
-    height: 500px; 
-    border: 3px solid #000; 
-    /* 2. QUITAMOS EL CURSOR DE AQUÍ */
-  }
+  #canvas { background: white; width: 500px; height: 500px; border: 3px solid #000; }
   .color-palette { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; background-color: #2a2a2a; padding: 12px; border-radius: 10px; margin-left: 15px; width: fit-content; }
-  .color-btn { width: 38px; height: 38px; border-radius: 50%; border: 2px solid #444; cursor: none; transition: all 0.15s ease; } /* 3. SIN CURSOR */
+  .color-btn { width: 38px; height: 38px; border-radius: 50%; border: 2px solid #444; cursor: none; transition: all 0.15s ease; }
   .color-btn:hover { transform: scale(1.15); border: 3px solid #fff; }
   .color-btn.active { border: 3px solid #00ff00; transform: scale(1.2); box-shadow: 0 0 10px #00ff00; }
   .color-btn.transparent { background-image: linear-gradient(45deg, #666 25%, transparent 25%), linear-gradient(-45deg, #666 25%, transparent 25%); background-size: 8px 8px; }
   .panel-actions { grid-column: span 5; display: flex; gap: 8px; justify-content: center; margin-top: 10px; padding-top: 10px; border-top: 2px solid #444; }
-  .panel-btn { width: 45px; height: 45px; border-radius: 8px; border: none; background: #6a0dad; color: white; font-size: 22px; cursor: none; transition: all 0.2s; } /* 4. SIN CURSOR */
+  .panel-btn { width: 45px; height: 45px; border-radius: 8px; border: none; background: #6a0dad; color: white; font-size: 22px; cursor: none; transition: all 0.2s; }
   .panel-btn:hover { background: #8a2be2; transform: scale(1.1); }
   .panel-btn.active-borrador { background: #ff0000; }
 
-  /* 5. ESTE ES EL PINCEL NUEVO QUE ANEXAMOS */
+  /* PINCEL BONITO 64PX */
   #pincel {
     position: fixed;
     width: 64px;
     height: 64px;
     pointer-events: none;
     z-index: 9999;
-    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M8 52 L12 56 L20 48 L56 12 L52 8 L16 44 L6 50 Z" fill="%23A0522D"/><ellipse cx="18" cy="46" rx="8" ry="16" transform="rotate(-45 18 46)" fill="%23FFFFFF"/></svg>');
     background-size: contain;
-    transform: translate(-10px, -58px);
+    transform: translate(-8px, -55px); /* Ajustado para que pinte en la punta */
   }
 </style>
 </head>
@@ -70,14 +63,13 @@
   </div>
 </div>
 
-<!-- 6. ANEXAMOS EL DIV DEL PINCEL -->
 <div id="pincel"></div>
 
 <script>
   let colorActual = '#FFFFFF';
   let modoBorrador = false;
   let audioContext;
-  const pincel = document.getElementById('pincel'); // 7. AGARRO EL PINCEL
+  const pincel = document.getElementById('pincel');
 
   const colores = [
     '#8B0000', '#B22222', '#FF0000', '#FF4500', '#FFA500',
@@ -95,7 +87,6 @@
 
   const palette = document.getElementById('palette');
 
-  // 8. ANEXO: MOVER EL PINCEL CON EL MOUSE
   document.addEventListener('mousemove', (e) => {
     pincel.style.left = e.clientX + 'px';
     pincel.style.top = e.clientY + 'px';
@@ -114,8 +105,8 @@
 
   function actualizarPincel(color) {
     const colorHex = color === 'transparent' ? '%23FFFFFF' : encodeURIComponent(color);
-    // 9. ANEXO: CAMBIA EL COLOR DE LA CERDA
-    pincel.style.backgroundImage = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M8 52 L12 56 L20 48 L56 12 L52 8 L16 44 L6 50 Z" fill="%23A0522D"/><ellipse cx="18" cy="46" rx="8" ry="16" transform="rotate(-45 18 46)" fill="${colorHex}"/></svg>')`;
+    // PINCEL NUEVO: Mango madera + virola metal + cerdas de color
+    pincel.style.backgroundImage = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect x="24" y="8" width="16" height="40" rx="2" fill="%23A0522D"/><rect x="22" y="46" width="20" height="6" rx="1" fill="%23C0C0C0"/><path d="M20 52 Q32 62 44 52 L44 56 Q32 60 20 56 Z" fill="${colorHex}"/></svg>')`;
   }
 
   colores.forEach((c) => {
@@ -128,7 +119,7 @@
       btn.classList.add('active');
       colorActual = c; modoBorrador = false;
       document.getElementById('btnBorrador').classList.remove('active-borrador');
-      actualizarPincel(c); // 10. LLAMO A ACTUALIZAR PINCEL
+      actualizarPincel(c);
       playSound();
     };
     palette.insertBefore(btn, palette.querySelector('.panel-actions'));
