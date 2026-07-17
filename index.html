@@ -13,198 +13,21 @@
     margin: 0; 
     padding: 20px; 
   }
- .logo {
+  .logo {
     margin-bottom: 15px;
     width: 250px;
   }
- .app-container { 
+  .app-container { 
     display: flex; 
     background: #2a2a2a; 
     padding: 15px; 
     border-radius: 15px; 
     border: 5px solid #111;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.4);
   }
   #canvas { 
     background: white; 
     width: 500px; 
     height: 500px; 
     border: 3px solid #000; 
-    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><path d="M6 40 L10 44 L18 36 L42 12 L36 6 L12 30 L4 38 Z" fill="%23A0522D"/><ellipse cx="15" cy="33" rx="6" ry="12" transform="rotate(-45 15 33)" fill="%23FFFFFF"/></svg>') 6 42, crosshair;
-  }
-  
- .color-palette {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 6px;
-    background-color: #2a2a2a;
-    padding: 12px;
-    border-radius: 10px;
-    margin-left: 15px;
-    width: fit-content;
-  }
- .color-btn {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    border: 2px solid #444;
-    cursor: pointer;
-    transition: all 0.15s ease;
-  }
- .color-btn:hover { transform: scale(1.15); border: 3px solid #fff; }
- .color-btn.active { 
-    border: 3px solid #00ff00; 
-    transform: scale(1.2); 
-    box-shadow: 0 0 10px #00ff00; 
-  }
- .color-btn.transparent {
-    background-image: linear-gradient(45deg, #666 25%, transparent 25%), linear-gradient(-45deg, #666 25%, transparent 25%);
-    background-size: 8px 8px;
-  }
-
- .panel-actions {
-    grid-column: span 5;
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 2px solid #444;
-  }
- .panel-btn {
-    width: 45px;
-    height: 45px;
-    border-radius: 8px;
-    border: none;
-    background: #6a0dad;
-    color: white;
-    font-size: 22px;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
- .panel-btn:hover {
-    background: #8a2be2;
-    transform: scale(1.1);
-  }
- .panel-btn.active-borrador {
-    background: #ff0000;
-  }
-</style>
-</head>
-<body>
-
-<img src="https://i.imgur.com/LOGO_URL.png" alt="ToysColor" class="logo">
-
-<div class="app-container">
-  <svg id="canvas" onclick="pintar(event)">
-    <circle id="parte1" cx="250" cy="250" r="100" fill="white" stroke="black" stroke-width="3"/>
-  </svg>
-
-  <div class="color-palette" id="palette">
-    <div class="panel-actions">
-      <button class="panel-btn" onclick="reiniciar()" title="Reiniciar">🔄</button>
-      <button class="panel-btn" onclick="borrarModo()" id="btnBorrador" title="Borrador">🧽</button>
-      <button class="panel-btn" onclick="window.print()" title="Imprimir">🖨️</button>
-    </div>
-  </div>
-</div>
-
-<audio id="clickSound" preload="auto">
-  <source src="https://www.soundjay.com/buttons/sounds/button-09.mp3" type="audio/mpeg">
-</audio>
-
-<script>
-  let colorActual = '#FFFFFF';
-  let modoBorrador = false;
-  let audioActivado = false; // Para desbloquear el sonido
-
-  const colores = [
-    '#8B0000', '#B22222', '#FF0000', '#FF4500', '#FFA500',
-    '#ADFF2F', '#FFFFE0', '#FFFF99', '#FFD700', '#FFC125',
-    '#00FF00', '#9ACD32', '#FFFF00', '#7FFF00', '#8FBC8F',
-    '#008B8B', '#006400', '#228B22', '#32CD32', '#556B2F',
-    '#00BFFF', '#1E90FF', '#0000CD', '#0000FF', '#000080',
-    '#6A5ACD', '#87CEEB', '#ADD8E6', '#4169E1', '#0000FF',
-    '#4B0082', '#483D8B', '#800080', '#BA55D3', '#FF69B4',
-    '#FF1493', '#FF69B4', '#FFB6C1', '#FFC0CB', '#FFB6C1',
-    '#FFF0F5', '#FFDAB9', '#F5DEB3', '#DEB887', '#D2B48C',
-    '#000000', '#8B4513', '#A52A2A', '#A0522D', '#CD853F',
-    'transparent', '#808080', '#A9A9A9', '#D3D3D3', '#FFFFFF'
-  ];
-
-  const palette = document.getElementById('palette');
-  const clickSound = document.getElementById('clickSound');
-
-  // Desbloquear audio al primer click en la página
-  document.body.addEventListener('click', () => {
-    if(!audioActivado) {
-      clickSound.play().then(() => {
-        clickSound.pause();
-        clickSound.currentTime = 0;
-        audioActivado = true;
-      }).catch(()=>{});
-    }
-  }, {once: true});
-
-  function actualizarPincel(color) {
-    const canvas = document.getElementById('canvas');
-    const colorHex = color === 'transparent' ? '%23FFFFFF' : encodeURIComponent(color);
-    // PINCEL GRANDE 48x48
-    canvas.style.cursor = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48"><path d="M6 40 L10 44 L18 36 L42 12 L36 6 L12 30 L4 38 Z" fill="%23A0522D"/><ellipse cx="15" cy="33" rx="6" ry="12" transform="rotate(-45 15 33)" fill="${colorHex}"/></svg>') 6 42, crosshair`;
-  }
-
-  colores.forEach((c, index) => {
-    let btn = document.createElement('button');
-    btn.className = 'color-btn';
-    if(c === 'transparent') btn.classList.add('transparent');
-    btn.style.backgroundColor = c;
-    btn.setAttribute('data-color', c);
-    
-    btn.onclick = () => {
-      document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      colorActual = c;
-      modoBorrador = false;
-      document.getElementById('btnBorrador').classList.remove('active-borrador');
-      
-      actualizarPincel(c);
-      
-      // SONIDO
-      if(audioActivado) {
-        clickSound.currentTime = 0;
-        clickSound.play();
-      }
-    };
-    
-    palette.insertBefore(btn, palette.querySelector('.panel-actions'));
-    if(c === '#FFFFFF') btn.classList.add('active');
-  });
-
-  function pintar(e) {
-    if(e.target.tagName!== 'svg') {
-      if(modoBorrador) {
-        e.target.setAttribute('fill', 'white');
-      } else {
-        e.target.setAttribute('fill', colorActual);
-      }
-    }
-  }
-
-  function reiniciar() {
-    document.querySelectorAll('#canvas *').forEach(el => {
-      el.setAttribute('fill', 'white');
-    });
-  }
-
-  function borrarModo() {
-    modoBorrador =!modoBorrador;
-    document.getElementById('btnBorrador').classList.toggle('active-borrador');
-    if(modoBorrador) actualizarPincel('#FFFFFF');
-  }
-
-  actualizarPincel('#FFFFFF');
-</script>
-
-</body>
-</html>
-    
+    /* PINCEL GRANDE 64PX COMO TU REFERENCIA */
+    cursor: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsTAAALEwEAmpwYAAABpElEQVR4nO2ZzW3CMBCF/0VqQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpGgQpG
