@@ -17,7 +17,7 @@
   .logo { margin-bottom: 15px; width: 250px; }
   .app-container { 
     display: flex; 
-    background: #2a2a; 
+    background: #2a2a2a; 
     padding: 15px; 
     border-radius: 15px; 
     border: 5px solid #111; 
@@ -34,7 +34,7 @@
   .panel-btn:hover { background: #8a2be2; transform: scale(1.1); }
   .panel-btn.active-borrador { background: #ff0000; }
 
-  /* PINCEL GORDO 70PX TIPO COLOREAR.NET */
+  /* PINCEL REAL CON GOTITA */
   #pincel {
     position: fixed;
     width: 70px;
@@ -42,7 +42,7 @@
     pointer-events: none;
     z-index: 9999;
     background-size: contain;
-    transform: translate(-15px, -60px); /* Punta del pincel */
+    transform: translate(-20px, -65px); /* La punta exacta */
   }
 </style>
 </head>
@@ -105,8 +105,8 @@
 
   function actualizarPincel(color) {
     const colorHex = color === 'transparent' ? '%23FFFFFF' : encodeURIComponent(color);
-    // PINCEL GORDO: Mango ancho + virola grande + Cerdas GORDAS para que se note el color
-    pincel.style.backgroundImage = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 70"><rect x="22" y="6" width="26" height="42" rx="3" fill="%238B4513"/><rect x="18" y="46" width="34" height="8" rx="2" fill="%23D3D3D3"/><ellipse cx="35" cy="58" rx="18" ry="12" fill="${colorHex}"/></svg>')`;
+    // PINCEL ESTILO TU FOTO: Mango rojo + virola + cerdas marrones + GOTITA DE COLOR
+    pincel.style.backgroundImage = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 70"><rect x="30" y="25" width="10" height="40" rx="2" fill="%23DC143C"/><rect x="28" y="22" width="14" height="6" rx="1" fill="%23C0C0C0"/><path d="M30 20 Q35 10 40 20 L42 22 Q35 25 28 22 Z" fill="%23654321"/><path d="M32 8 Q35 2 38 8 C38 12 32 12 32 8 Z" fill="${colorHex}"/><circle cx="33" cy="10" r="1.5" fill="${colorHex}" opacity="0.7"/><circle cx="37" cy="11" r="1" fill="${colorHex}" opacity="0.6"/></svg>')`;
   }
 
   colores.forEach((c) => {
